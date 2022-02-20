@@ -7,7 +7,9 @@
     tools:context=".NewsFrament"
     android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
     <LinearLayout
@@ -72,6 +74,9 @@
             android:textAlignment="center" />
 
 
+
     </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
