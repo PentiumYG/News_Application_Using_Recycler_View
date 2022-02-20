@@ -1,5 +1,6 @@
 package com.mc2022.template;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,11 +17,11 @@ public class NewsFrament extends Fragment {
 
     // the fragment initialization parameters
     private ModelNews modelNews;
-    private Button mStartService;
-    private Button mStopService;
-    private TextView mTitle;
-    private TextView mBody;
-    private ImageView mNewsImage;
+    Button mStartService;
+    Button mStopService;
+    TextView mTitle;
+    TextView mBody;
+    ImageView mNewsImage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,26 @@ public class NewsFrament extends Fragment {
         mBody.setText(modelNews.getmTextBody());
         mNewsImage = (ImageView)v.findViewById(R.id.newsImage);
 
+        //starting a service
+        mStartService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().startService(new Intent(getContext(), MyService.class));
+            }
+        });
+
+        //stopping a service
+        mStartService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().stopService(new Intent(getContext(), MyService.class));
+            }
+        });
+
+
         return v;
     }
+
+
+
 }
