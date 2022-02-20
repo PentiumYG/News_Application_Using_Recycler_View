@@ -72,7 +72,9 @@ public class NewsFrament extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Handler handler = new Handler();
+            HelpHandler handler = new HelpHandler();
+
+
 
             String jsonString = handler.makeServiceCall(url);
             if(jsonString != null){
@@ -87,6 +89,7 @@ public class NewsFrament extends Fragment {
                     news.put("title", title);
                     news.put("body", body);
 
+                    newsList.clear();
                     newsList.add(news);
 
                 } catch (JSONException e) {

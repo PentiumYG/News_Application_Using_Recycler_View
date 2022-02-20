@@ -12,14 +12,17 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class Handler {
+public class HelpHandler {
 
-    private static final String TAG = Handler.class.getSimpleName();
+    private static final String TAG = HelpHandler.class.getSimpleName();
 
-    public Handler(){
+
+    public HelpHandler(){
     }
 
     public String makeServiceCall(String reqUrl) {
+
+
         String response = null;
         try {
             URL url = new URL(reqUrl);
