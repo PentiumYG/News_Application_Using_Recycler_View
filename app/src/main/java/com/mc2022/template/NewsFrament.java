@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NewsFrament extends Fragment {
 
@@ -49,15 +50,18 @@ public class NewsFrament extends Fragment {
         mStartService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().startService(new Intent(getContext(), MyService.class));
+                Intent in = new Intent(getActivity().getBaseContext(), MyService.class);
+                //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
+                getActivity().startService(in);
             }
         });
 
         //stopping a service
-        mStartService.setOnClickListener(new View.OnClickListener() {
+        mStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().stopService(new Intent(getContext(), MyService.class));
+                //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
+                getActivity().stopService(new Intent(getActivity().getBaseContext(), MyService.class));
             }
         });
 

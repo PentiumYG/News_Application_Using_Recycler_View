@@ -7,15 +7,18 @@ import android.widget.Toast;
 
 public class MyService extends Service {
 
+    public MyService() {
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
-        return START_STICKY;
+        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
