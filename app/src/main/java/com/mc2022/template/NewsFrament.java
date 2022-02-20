@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,7 @@ public class NewsFrament extends Fragment {
     ImageView mNewsImage;
     String url;
     ProgressDialog pd;
+    ListView list;
     HashMap<String, String> news = new HashMap<>();
 
     @Override
@@ -49,8 +53,9 @@ public class NewsFrament extends Fragment {
         url = modelNews.getNewsURL();
         newsList = new ArrayList<>();
 
-        isNetworkOK = NetworkHelper.isNetworkAvailable(getActivity().getApplicationContext());
+        isNetworkOK = NetworkHelper.isNetworkAvailable(getActivity().getBaseContext());
         Log.i("Network:", String.valueOf(isNetworkOK));
+
 
     }
 
@@ -58,7 +63,7 @@ public class NewsFrament extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(getActivity().getApplicationContext());
+            pd = new ProgressDialog(getActivity());
             pd.setMessage("Loading...");
             pd.setCancelable(false);
             pd.show();
@@ -117,8 +122,10 @@ public class NewsFrament extends Fragment {
             if(pd.isShowing()){
                 pd.dismiss();
             }
-            mTitle.setText(news.get("title"));
-            mBody.setText(news.get("body"));
+            ListAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), newsList,
+                    R.layout.list_view, new String[]{ "title","body"},
+                    new int[]{R.id.newsTitle, R.id.newsBody});
+            list.setAdapter(adapter);
 
         }
     }
@@ -133,11 +140,13 @@ public class NewsFrament extends Fragment {
         mStartService.setText(modelNews.getmStartS());
         mStopService = (Button)v.findViewById(R.id.buttonStopService);
         mStopService.setText(modelNews.getmStopS());
-        mTitle = (TextView)v.findViewById(R.id.TextTitle);
-        mTitle.setText(modelNews.getmTextTitle());
-        mBody = (TextView)v.findViewById(R.id.TextBody);
-        mBody.setText(modelNews.getmTextBody());
-        mNewsImage = (ImageView)v.findViewById(R.id.newsImage);
+//        mTitle = (TextView)v.findViewById(R.id.TextTitle);
+//        mTitle.setText(modelNews.getmTextTitle());
+//        mBody = (TextView)v.findViewById(R.id.TextBody);
+//        mBody.setText(modelNews.getmTextBody());
+//        mNewsImage = (ImageView)v.findViewById(R.id.newsImage);
+
+        list = (ListView)v.findViewById(R.id.newsList);
 
         //starting a service
         mStartService.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +155,9 @@ public class NewsFrament extends Fragment {
                 Intent in = new Intent(getActivity().getBaseContext(), MyService.class);
                 //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
                 if(isNetworkOK == true) {
+                    new getNews().execute();
                     getActivity().startService(in);
+
                 }
                 else{
                     Toast.makeText(getActivity().getApplicationContext(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
