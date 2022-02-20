@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         FragmentManager fragMan = getSupportFragmentManager();
         Fragment F = fragMan.findFragmentById(R.id.fragmentContainer);
         if(F == null){
