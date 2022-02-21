@@ -1,7 +1,9 @@
 package com.mc2022.template;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,17 +39,19 @@ public class NewsFrament extends Fragment {
 
     ArrayList<HashMap<String, String>> newsList;
     private boolean isNetworkOK;
+    BatteryPowerInfo batteryPowerInfo = new BatteryPowerInfo();
+
 
     // the fragment initialization parameters
     private ModelNews modelNews;
     Button mStartService;
     Button mStopService;
-//    TextView mTitle;
-//    TextView mBody;
-//    ImageView mNewsImage;
     String url;
     ProgressDialog pd;
     ListView list;
+    BroadcastReceiver broadcastReceiver;
+
+    //useful variables
     int i=0;
     boolean halt=true;
     int k=0;
@@ -59,7 +64,6 @@ public class NewsFrament extends Fragment {
         newsList = new ArrayList<>();
         isNetworkOK = NetworkHelper.isNetworkAvailable(getActivity().getBaseContext());
         Log.i("Network:", String.valueOf(isNetworkOK));
-
 
     }
 
@@ -74,6 +78,7 @@ public class NewsFrament extends Fragment {
             i=k;
 
             Collections.reverse(newsList);
+
             Toast.makeText(getActivity().getApplicationContext(),"Json Data is downloading",Toast.LENGTH_LONG).show();
         }
 
@@ -168,6 +173,25 @@ public class NewsFrament extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        IntentFilter filter1 = new IntentFilter(Intent.ACTION_BATTERY_OKAY);
+        IntentFilter filter2 = new IntentFilter(Intent.ACTION_BATTERY_LOW);
+        IntentFilter filter3 = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
+        IntentFilter filter4 = new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
+        getActivity().registerReceiver(batteryPowerInfo, filter1);
+        getActivity().registerReceiver(batteryPowerInfo, filter2);
+        getActivity().registerReceiver(batteryPowerInfo, filter3);
+        getActivity().registerReceiver(batteryPowerInfo, filter4);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unregisterReceiver(batteryPowerInfo);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -177,11 +201,20 @@ public class NewsFrament extends Fragment {
         mStartService.setText(modelNews.getmStartS());
         mStopService = (Button)v.findViewById(R.id.buttonStopService);
         mStopService.setText(modelNews.getmStopS());
-//        mTitle = (TextView)v.findViewById(R.id.TextTitle);
-//        mTitle.setText(modelNews.getmTextTitle());
-//        mBody = (TextView)v.findViewById(R.id.TextBody);
-//        mBody.setText(modelNews.getmTextBody());
-//        mNewsImage = (ImageView)v.findViewById(R.id.newsImage);
+
+        IntentFilter filter1 = new IntentFilter(Intent.ACTION_BATTERY_OKAY);
+        IntentFilter filter2 = new IntentFilter(Intent.ACTION_BATTERY_LOW);
+        IntentFilter filter3 = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
+        IntentFilter filter4 = new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
+        getActivity().registerReceiver(batteryPowerInfo, filter1);
+        Log.i("Battery OK", String.valueOf(filter1.hasAction(Intent.ACTION_BATTERY_LOW)));
+        getActivity().registerReceiver(batteryPowerInfo, filter2);
+        Log.i("Battery LOW", String.valueOf(filter2.getAction(0)));
+        getActivity().registerReceiver(batteryPowerInfo, filter3);
+        Log.i("Power Connected", filter3.getAction(0));
+        getActivity().registerReceiver(batteryPowerInfo, filter4);
+        Log.i("Power Dis-Connected", filter4.getAction(0));
+
 
         list = (ListView)v.findViewById(R.id.newsList);
 
@@ -193,7 +226,8 @@ public class NewsFrament extends Fragment {
                 halt =true;
                 n=0;
                 //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
-                if(isNetworkOK == true) {
+
+                if(isNetworkOK == true && filter1.hasAction(Intent.ACTION_BATTERY_OKAY) && filter4.hasAction(Intent.ACTION_POWER_DISCONNECTED)) {
                     new getNews().execute();
                     getActivity().startService(in);
                 }
@@ -202,6 +236,10 @@ public class NewsFrament extends Fragment {
                 }
             }
         });
+
+        if(filter2.hasAction(Intent.ACTION_BATTERY_LOW) && filter3.hasAction(Intent.ACTION_POWER_CONNECTED)) {
+            getActivity().stopService(new Intent(getActivity().getBaseContext(), MyService.class));
+        }
 
         //stopping a service
         mStopService.setOnClickListener(new View.OnClickListener() {
