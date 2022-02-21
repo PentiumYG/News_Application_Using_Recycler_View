@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ import java.util.HashMap;
 
 public class NewsFrament extends Fragment {
 
-    private String TAG = NewsFrament.class.getSimpleName();
+    private final String TAG = NewsFrament.class.getSimpleName();
 
     ArrayList<HashMap<String, String>> newsList;
     private boolean isNetworkOK;
@@ -38,21 +39,21 @@ public class NewsFrament extends Fragment {
     private ModelNews modelNews;
     Button mStartService;
     Button mStopService;
-    TextView mTitle;
-    TextView mBody;
-    ImageView mNewsImage;
+//    TextView mTitle;
+//    TextView mBody;
+//    ImageView mNewsImage;
     String url;
     ProgressDialog pd;
     ListView list;
-    HashMap<String, String> news = new HashMap<>();
+
+    boolean halt=true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         modelNews = new ModelNews();
-        url = modelNews.getNewsURL();
         newsList = new ArrayList<>();
-
+        url = modelNews.getNewsURL();
         isNetworkOK = NetworkHelper.isNetworkAvailable(getActivity().getBaseContext());
         Log.i("Network:", String.valueOf(isNetworkOK));
 
@@ -72,50 +73,64 @@ public class NewsFrament extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
+
             HelpHandler handler = new HelpHandler();
+                String jsonString = handler.makeServiceCall(url);
+                if (jsonString != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+
+                            String body = jsonObject.getString("body");
+                            String title = jsonObject.getString("title");
+
+                            HashMap<String, String> n = new HashMap<>();
+                            n.put("title", title);
+                            n.put("body", body);
+
+                            newsList.add(n);
 
 
+                    } catch (JSONException e) {
+                        // Toast.makeText(getActivity(), "Json Parsing Error", Toast.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Json parsing error: " + e.getMessage().toString(),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
 
-            String jsonString = handler.makeServiceCall(url);
-            if(jsonString != null){
-                try {
-                    JSONObject jsonObject = new JSONObject(jsonString);
-                   // JSONArray news = jsonObject.getJSONArray("news");
-                    String body = jsonObject.getString("body");
-                    String title = jsonObject.getString("title");
-
-
-
-                    news.put("title", title);
-                    news.put("body", body);
-
-                    newsList.clear();
-                    newsList.add(news);
-
-                } catch (JSONException e) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Json Parsing Error", Toast.LENGTH_SHORT).show();
+                    } catch (Exception ex) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Exception error: " + ex.getMessage().toString(),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (Error er) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Error found: " + er.getMessage().toString(),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "Json parsing error: " + e.getMessage(),
+                                    "Server Error",
                                     Toast.LENGTH_LONG).show();
                         }
                     });
-
                 }
-            }
-            else{
-                Toast.makeText(getActivity().getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "Server Error",
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
             return null;
         }
 
@@ -160,7 +175,6 @@ public class NewsFrament extends Fragment {
                 if(isNetworkOK == true) {
                     new getNews().execute();
                     getActivity().startService(in);
-
                 }
                 else{
                     Toast.makeText(getActivity().getApplicationContext(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
