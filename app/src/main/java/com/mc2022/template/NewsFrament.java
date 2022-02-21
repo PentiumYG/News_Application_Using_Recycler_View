@@ -207,7 +207,7 @@ public class NewsFrament extends Fragment {
         IntentFilter filter3 = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
         IntentFilter filter4 = new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
         getActivity().registerReceiver(batteryPowerInfo, filter1);
-        Log.i("Battery OK", String.valueOf(filter1.hasAction(Intent.ACTION_BATTERY_LOW)));
+        Log.i("Battery OK", String.valueOf(filter1.getAction(0)));
         getActivity().registerReceiver(batteryPowerInfo, filter2);
         Log.i("Battery LOW", String.valueOf(filter2.getAction(0)));
         getActivity().registerReceiver(batteryPowerInfo, filter3);
