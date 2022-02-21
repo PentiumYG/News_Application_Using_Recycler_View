@@ -227,7 +227,7 @@ public class NewsFrament extends Fragment {
                 n=0;
                 //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
 
-                if(isNetworkOK == true && filter1.hasAction(Intent.ACTION_BATTERY_OKAY) && filter4.hasAction(Intent.ACTION_POWER_DISCONNECTED)) {
+                if(isNetworkOK == true && (filter1.hasAction(Intent.ACTION_BATTERY_OKAY) || filter4.hasAction(Intent.ACTION_POWER_DISCONNECTED))) {
                     new getNews().execute();
                     getActivity().startService(in);
                 }
@@ -237,7 +237,7 @@ public class NewsFrament extends Fragment {
             }
         });
 
-        if(filter2.hasAction(Intent.ACTION_BATTERY_LOW) && filter3.hasAction(Intent.ACTION_POWER_CONNECTED)) {
+        if(filter2.hasAction(Intent.ACTION_BATTERY_LOW) || filter3.hasAction(Intent.ACTION_POWER_CONNECTED)) {
             getActivity().stopService(new Intent(getActivity().getBaseContext(), MyService.class));
         }
 
