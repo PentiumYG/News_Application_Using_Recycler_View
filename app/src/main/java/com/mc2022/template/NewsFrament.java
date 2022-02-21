@@ -45,15 +45,16 @@ public class NewsFrament extends Fragment {
     String url;
     ProgressDialog pd;
     ListView list;
-
+    int i=0;
     boolean halt=true;
+    int k=0;
+    int n=0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         modelNews = new ModelNews();
         newsList = new ArrayList<>();
-        url = modelNews.getNewsURL();
         isNetworkOK = NetworkHelper.isNetworkAvailable(getActivity().getBaseContext());
         Log.i("Network:", String.valueOf(isNetworkOK));
 
@@ -64,33 +65,36 @@ public class NewsFrament extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(getActivity());
-            pd.setMessage("Loading...");
-            pd.setCancelable(false);
-            pd.show();
-            //Toast.makeText(getActivity().getApplicationContext(),"Json Data is downloading",Toast.LENGTH_LONG).show();
+//            pd = new ProgressDialog(getActivity());
+//            pd.setMessage("Loading...");
+//            pd.setCancelable(false);
+//            pd.show();
+            i=k;
+            Toast.makeText(getActivity().getApplicationContext(),"Json Data is downloading",Toast.LENGTH_LONG).show();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            HelpHandler handler = new HelpHandler();
+            while(halt && n!=1) {
+                url = modelNews.getNewsURL(i);
+                HelpHandler handler = new HelpHandler();
                 String jsonString = handler.makeServiceCall(url);
                 if (jsonString != null) {
                     try {
                         JSONObject jsonObject = new JSONObject(jsonString);
 
-                            String body = jsonObject.getString("body");
-                            String title = jsonObject.getString("title");
+                        String body = jsonObject.getString("body");
+                        String title = jsonObject.getString("title");
 
-                            HashMap<String, String> n = new HashMap<>();
-                            n.put("title", title);
-                            n.put("body", body);
+                        HashMap<String, String> n = new HashMap<>();
+                        n.put("title", title);
+                        n.put("body", body);
 
-                            newsList.add(n);
+                        newsList.add(n);
 
 
                     } catch (JSONException e) {
+                        halt = false;
                         // Toast.makeText(getActivity(), "Json Parsing Error", Toast.LENGTH_SHORT).show();
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -102,6 +106,7 @@ public class NewsFrament extends Fragment {
                         });
 
                     } catch (Exception ex) {
+                        halt = false;
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -111,6 +116,7 @@ public class NewsFrament extends Fragment {
                             }
                         });
                     } catch (Error er) {
+                        halt = false;
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -121,6 +127,7 @@ public class NewsFrament extends Fragment {
                         });
                     }
                 } else {
+                    halt = false;
                     Toast.makeText(getActivity().getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -131,15 +138,22 @@ public class NewsFrament extends Fragment {
                         }
                     });
                 }
+                i++;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
-            if(pd.isShowing()){
-                pd.dismiss();
-            }
+//            if(pd.isShowing()){
+//                pd.dismiss();
+//            }
             ListAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), newsList,
                     R.layout.list_view, new String[]{ "title","body"},
                     new int[]{R.id.newsTitle, R.id.newsBody});
@@ -171,6 +185,8 @@ public class NewsFrament extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent in = new Intent(getActivity().getBaseContext(), MyService.class);
+                halt =true;
+                n=0;
                 //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
                 if(isNetworkOK == true) {
                     new getNews().execute();
@@ -186,6 +202,9 @@ public class NewsFrament extends Fragment {
         mStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                n=1;
+                k=i;
+                halt = false;
                 //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
                 getActivity().stopService(new Intent(getActivity().getBaseContext(), MyService.class));
             }

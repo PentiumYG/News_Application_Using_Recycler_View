@@ -7,7 +7,7 @@ public class ModelNews {
     private String mTextBody;
     private String mStartS = "Start Service";
     private String mStopS = "Stop Service";
-    private String newsURL = "https://petwear.in/mc2022/news/news_3.json";
+    private String newsURL = "https://petwear.in/mc2022/news/";
 
     public String getmTextBody() {
         return mTextBody;
@@ -25,8 +25,8 @@ public class ModelNews {
         return mStopS;
     }
 
-    public String getNewsURL() {
-        return newsURL;
+    public String getNewsURL(int i) {
+        return newsURL+"news_"+i+".json";
     }
 
     public void setmTextBody(String mTextBody) {
