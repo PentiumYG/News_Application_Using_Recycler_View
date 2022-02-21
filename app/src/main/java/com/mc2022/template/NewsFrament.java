@@ -26,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class NewsFrament extends Fragment {
 
@@ -70,6 +72,8 @@ public class NewsFrament extends Fragment {
 //            pd.setCancelable(false);
 //            pd.show();
             i=k;
+
+            Collections.reverse(newsList);
             Toast.makeText(getActivity().getApplicationContext(),"Json Data is downloading",Toast.LENGTH_LONG).show();
         }
 
@@ -140,7 +144,7 @@ public class NewsFrament extends Fragment {
                 }
                 i++;
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -154,6 +158,7 @@ public class NewsFrament extends Fragment {
 //            if(pd.isShowing()){
 //                pd.dismiss();
 //            }
+            Collections.reverse(newsList);
             ListAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), newsList,
                     R.layout.list_view, new String[]{ "title","body"},
                     new int[]{R.id.newsTitle, R.id.newsBody});
