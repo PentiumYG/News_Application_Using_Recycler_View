@@ -39,7 +39,6 @@ public class NewsFrament extends Fragment {
 
     ArrayList<HashMap<String, String>> newsList;
     private boolean isNetworkOK;
-    BatteryPowerInfo batteryPowerInfo = new BatteryPowerInfo();
 
 
     // the fragment initialization parameters
@@ -49,7 +48,6 @@ public class NewsFrament extends Fragment {
     String url;
     ProgressDialog pd;
     ListView list;
-    BroadcastReceiver broadcastReceiver;
 
     //useful variables
     int i=0;
@@ -148,11 +146,6 @@ public class NewsFrament extends Fragment {
                     });
                 }
                 i++;
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
             return null;
         }
@@ -175,20 +168,11 @@ public class NewsFrament extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        IntentFilter filter1 = new IntentFilter(Intent.ACTION_BATTERY_OKAY);
-        IntentFilter filter2 = new IntentFilter(Intent.ACTION_BATTERY_LOW);
-        IntentFilter filter3 = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
-        IntentFilter filter4 = new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
-        getActivity().registerReceiver(batteryPowerInfo, filter1);
-        getActivity().registerReceiver(batteryPowerInfo, filter2);
-        getActivity().registerReceiver(batteryPowerInfo, filter3);
-        getActivity().registerReceiver(batteryPowerInfo, filter4);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unregisterReceiver(batteryPowerInfo);
     }
 
     @Override
@@ -202,19 +186,6 @@ public class NewsFrament extends Fragment {
         mStopService = (Button)v.findViewById(R.id.buttonStopService);
         mStopService.setText(modelNews.getmStopS());
 
-        IntentFilter filter1 = new IntentFilter(Intent.ACTION_BATTERY_OKAY);
-        IntentFilter filter2 = new IntentFilter(Intent.ACTION_BATTERY_LOW);
-        IntentFilter filter3 = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
-        IntentFilter filter4 = new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
-        getActivity().registerReceiver(batteryPowerInfo, filter1);
-        Log.i("Battery OK", String.valueOf(filter1.getAction(0)));
-        getActivity().registerReceiver(batteryPowerInfo, filter2);
-        Log.i("Battery LOW", String.valueOf(filter2.getAction(0)));
-        getActivity().registerReceiver(batteryPowerInfo, filter3);
-        Log.i("Power Connected", filter3.getAction(0));
-        getActivity().registerReceiver(batteryPowerInfo, filter4);
-        Log.i("Power Dis-Connected", filter4.getAction(0));
-
 
         list = (ListView)v.findViewById(R.id.newsList);
 
@@ -227,7 +198,7 @@ public class NewsFrament extends Fragment {
                 n=0;
                 //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
 
-                if(isNetworkOK == true && (filter1.hasAction(Intent.ACTION_BATTERY_OKAY) || filter4.hasAction(Intent.ACTION_POWER_DISCONNECTED))) {
+                if(isNetworkOK == true) {
                     new getNews().execute();
                     getActivity().startService(in);
                 }
@@ -236,10 +207,6 @@ public class NewsFrament extends Fragment {
                 }
             }
         });
-
-        if(filter2.hasAction(Intent.ACTION_BATTERY_LOW) || filter3.hasAction(Intent.ACTION_POWER_CONNECTED)) {
-            getActivity().stopService(new Intent(getActivity().getBaseContext(), MyService.class));
-        }
 
         //stopping a service
         mStopService.setOnClickListener(new View.OnClickListener() {
