@@ -1,47 +1,31 @@
-# Assignment 2 - News Application
+# Assignment 3 - News Application (More Updates)
 
 ## Summary:
-A news application. It starts/stops a service. If the internet connection is available, then the
-service downloads the news files(JSON) provided by the server on a URL (like
-https://petwear.in/mc2022/news/news_<num>.json ) (while the service is running) and store it in
-an appropriate location that is private to the application and displays its content on the
-Application interface.
-The news files can be downloaded all at once or downloaded at an interval of 10 seconds while
-the service is running.
-When the battery is low, or the phone is charging, the service must automatically stop.
+A news application that lists news and shows details of the news. This assignment builds upon
+assignment 2 where you started a service to download the images and you showed the title of
+recent news only. Now you need to show all the news in a list detail format. The list will show the
+news number and the details will show the details of the news. The details part will show the
+body (news description) and an image along with the Title. Use RecyclerView to show the list of
+news. The list and details both should use Fragments. One should be able to put a comment on
+a news article.
+
 ## Description:
 A news application:
-1) The service must start by clicking the “start service” button and should stop by clicking
-the “stop service” button. The most recent news article’s title should be displayed on the
-application interface (optionally with image and news description).
-2) Check if an internet connection is available, and if available, then download the news
-files available at (https://petwear.in/mc2022/news/news_<num>.json). Each file contains
-one news article. Download and save this file as private to the application.
-Here <num> can be in range (1,2,3,4....), Eg:
-https://petwear.in/mc2022/news/news_0.json
-Download all files available, if some file, suppose “news_10.json” is not available, stop
-downloading more files. Perform the network operations using appropriate functions of
-AyncTask.
-3) Use broadcast receivers to stop the service when BATTERY_LOW or
-POWER_CONNECTED and resume when BATTERY_OKAY and POWER_DISCONNECTED.
-4) The news files can be downloaded all at once or downloaded at an interval of 10
-seconds while the service is running.
-5) The UI of the application must be developed using fragments and must use Linear or
-Relative layouts.
-## Structure of news file:
-```
-{
-“title” : “.....”,
-“body” : “.....”,
-“image-url” : “.....”
-}
-```
-## Note:
-● Only displaying the title of the most recent news is mandatory for the assignment.
-The rest of the content is optional and is for the bonus.
+1) List-detail view of the news. The list will show the news number and the details part will
+show the details of the new title, description body, image.
+2) The list should be designed with RecyclerView, both list and detail should use
+Fragments.
+3) One should be able to put a comment on the news. This comment should be visible next
+time, one clicks on that news. Also, users can further edit that comment. That should be
+saved and updated comment will be seen in a subsequent visit.
+4) Compulsory part: the ability to put/edit one comment and show that on the next click on
+that news number.
+5) **Bonus: Ability to put/edit ratings to a news article and show the ratings on the next click
+on that news number**
 
-## Resources:
-1. JSON Parsing for Android in Java :
-https://www.tutorialspoint.com/android/android_json_parser.htm
-2. JSON Parsing for Android in Kotlin :
-https://www.geeksforgeeks.org/json-parsing-in-android/
+## Topics Covered:
+> Fragments - Must be used for the application UI. \
+> Networking - Downloading of a news file. \
+> Services - The service downloads the news files. \
+> File Storage - The downloaded news file must be stored in an appropriate location as private
+to the application.
