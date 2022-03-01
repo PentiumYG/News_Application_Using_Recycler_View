@@ -28,8 +28,8 @@ public class HelpHandler {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(5000);
+            conn.setConnectTimeout(5000);
             conn.setDoInput(true);
             conn.setRequestMethod("GET");
 

@@ -90,12 +90,14 @@ public class NewsFrament extends Fragment {
                     try {
                         JSONObject jsonObject = new JSONObject(jsonString);
 
-                        String body = jsonObject.getString("body");
+                      //  String body = jsonObject.getString("body");
                         String title = jsonObject.getString("title");
-
+                        String newsNumber = String.valueOf(i);
                         HashMap<String, String> n = new HashMap<>();
+                        n.put("newsNumber", newsNumber);
                         n.put("title", title);
-                        n.put("body", body);
+                     //   n.put("body", body);
+
 
                         newsList.add(n);
 
@@ -158,8 +160,8 @@ public class NewsFrament extends Fragment {
 //            }
             Collections.reverse(newsList);
             ListAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), newsList,
-                    R.layout.list_view, new String[]{ "title","body"},
-                    new int[]{R.id.newsTitle, R.id.newsBody});
+                    R.layout.list_view, new String[]{ "title", "newsNumber"},
+                    new int[]{R.id.newsTitle, R.id.sNo});
             list.setAdapter(adapter);
 
         }
