@@ -5,9 +5,21 @@ package com.mc2022.template;
 public class ModelNews {
     private String mTextTitle;
     private String mTextBody;
-    private String mStartS = "Start Service";
-    private String mStopS = "Stop Service";
-    private String newsURL = "https://petwear.in/mc2022/news/";
+    private String mImageUrl;
+    private String mSno;
+
+
+
+    public ModelNews(String mTextTitle, String mTextBody, String mImageUrl, String mSno) {
+        this.mTextTitle = mTextTitle;
+        this.mTextBody = mTextBody;
+        this.mImageUrl = mImageUrl;
+        this.mSno = mSno;
+    }
+
+    public String getmSno() { return mSno; }
+
+    public void setmSno(String mSno) { this.mSno = mSno; }
 
     public String getmTextBody() {
         return mTextBody;
@@ -17,17 +29,9 @@ public class ModelNews {
         return mTextTitle;
     }
 
-    public String getmStartS() {
-        return mStartS;
-    }
+    public String getmImageUrl() { return mImageUrl; }
 
-    public String getmStopS() {
-        return mStopS;
-    }
-
-    public String getNewsURL(int i) {
-        return newsURL+"news_"+i+".json";
-    }
+    public void setmImageUrl(String mImageUrl) { this.mImageUrl = mImageUrl; }
 
     public void setmTextBody(String mTextBody) {
         this.mTextBody = mTextBody;

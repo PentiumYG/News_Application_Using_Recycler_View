@@ -4,11 +4,14 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -35,19 +38,18 @@ import java.util.List;
 
 public class NewsFrament extends Fragment {
 
-    private final String TAG = NewsFrament.class.getSimpleName();
-
-    ArrayList<HashMap<String, String>> newsList;
+   // ArrayList<HashMap<String, String>> newsList;
     private boolean isNetworkOK;
 
+    //Creating ArrayList of ModelNews type
+    ArrayList<ModelNews> newsdataholder;
 
     // the fragment initialization parameters
-    private ModelNews modelNews;
     Button mStartService;
     Button mStopService;
     String url;
     ProgressDialog pd;
-    ListView list;
+   // ListView list;
 
     //useful variables
     int i=0;
@@ -55,11 +57,16 @@ public class NewsFrament extends Fragment {
     int k=0;
     int n=0;
 
+    //creating object for recycler view
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        modelNews = new ModelNews();
-        newsList = new ArrayList<>();
+      //  modelNews = new ModelNews();
+      //  newsList = new ArrayList<>();
+
         isNetworkOK = NetworkHelper.isNetworkAvailable(getActivity().getBaseContext());
         Log.i("Network:", String.valueOf(isNetworkOK));
 
@@ -75,7 +82,7 @@ public class NewsFrament extends Fragment {
 //            pd.show();
             i=k;
 
-            Collections.reverse(newsList);
+            Collections.reverse(newsdataholder);
 
             Toast.makeText(getActivity().getApplicationContext(),"Json Data is downloading",Toast.LENGTH_LONG).show();
         }
@@ -83,23 +90,27 @@ public class NewsFrament extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             while(halt && n!=1) {
-                url = modelNews.getNewsURL(i);
+                url = "https://petwear.in/mc2022/news/news_"+i+".json";
                 HelpHandler handler = new HelpHandler();
                 String jsonString = handler.makeServiceCall(url);
                 if (jsonString != null) {
                     try {
                         JSONObject jsonObject = new JSONObject(jsonString);
+                       // JSONArray news = jsonObject.getJSONArray("news");
 
-                      //  String body = jsonObject.getString("body");
-                        String title = jsonObject.getString("title");
-                        String newsNumber = String.valueOf(i);
-                        HashMap<String, String> n = new HashMap<>();
-                        n.put("newsNumber", newsNumber);
-                        n.put("title", title);
-                     //   n.put("body", body);
+//                        String body = jsonObject.getString("body");
+//                        String title = jsonObject.getString("title");
+//                        String newsNumber = String.valueOf(i);
+//                        String imgUrl = jsonObject.getString("image-url");
+
+                        ModelNews m = new ModelNews(
+                                jsonObject.getString("title"),
+                                jsonObject.getString("body"),
+                                jsonObject.getString("image-url"),
+                                String.valueOf(i));
 
 
-                        newsList.add(n);
+                        newsdataholder.add(m);
 
 
                     } catch (JSONException e) {
@@ -137,7 +148,7 @@ public class NewsFrament extends Fragment {
                     }
                 } else {
                     halt = false;
-                    Toast.makeText(getActivity().getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity().getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -158,12 +169,10 @@ public class NewsFrament extends Fragment {
 //            if(pd.isShowing()){
 //                pd.dismiss();
 //            }
-            Collections.reverse(newsList);
-            ListAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), newsList,
-                    R.layout.list_view, new String[]{ "title", "newsNumber"},
-                    new int[]{R.id.newsTitle, R.id.sNo});
-            list.setAdapter(adapter);
+            Collections.reverse(newsdataholder);
 
+            adapter = new AdapterClass(newsdataholder, getActivity().getApplicationContext());
+            recyclerView.setAdapter(adapter);
         }
     }
 
@@ -182,14 +191,22 @@ public class NewsFrament extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_news, container, false);
+
+        //fetching recycleView
+        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerViewNews);
+        recyclerView.setHasFixedSize(true);
+
         Log.i("Fragment", "before edited");
         mStartService = (Button)v.findViewById(R.id.buttonStartService);
-        mStartService.setText(modelNews.getmStartS());
+        mStartService.setText("Start Service");
         mStopService = (Button)v.findViewById(R.id.buttonStopService);
-        mStopService.setText(modelNews.getmStopS());
+        mStopService.setText("Stop Service");
 
+        //Adding recycler view layout manager
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        newsdataholder = new ArrayList<>();
 
-        list = (ListView)v.findViewById(R.id.newsList);
+       // list = (ListView)v.findViewById(R.id.newsList);
 
         //starting a service
         mStartService.setOnClickListener(new View.OnClickListener() {
