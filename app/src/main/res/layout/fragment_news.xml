@@ -30,12 +30,12 @@
             android:text="Stop Service" />
     </LinearLayout>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/newsList">
+<!--    <ListView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/newsList">-->
 
-    </ListView>
+<!--    </ListView>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

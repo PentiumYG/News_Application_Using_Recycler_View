@@ -1,48 +1,35 @@
 package com.mc2022.template;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
-public class NewsFrament extends Fragment {
+public class NewsFrament extends Fragment{
 
    // ArrayList<HashMap<String, String>> newsList;
     private boolean isNetworkOK;
 
     //Creating ArrayList of ModelNews type
-    ArrayList<ModelNews> newsdataholder;
+    ArrayList<ModelNews> newsdataholder = new ArrayList<>();
 
     // the fragment initialization parameters
     Button mStartService;
@@ -72,7 +59,7 @@ public class NewsFrament extends Fragment {
 
     }
 
-    private class getNews extends AsyncTask<Void, Void, Void>{
+    private class getNews extends AsyncTask<Void, Void, Void> implements RecyclerViewInterface{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -111,6 +98,9 @@ public class NewsFrament extends Fragment {
 
 
                         newsdataholder.add(m);
+
+                        String text4 = newsdataholder.get(i).getmTextTitle();
+                        System.out.println(i+" :"+text4);
 
 
                     } catch (JSONException e) {
@@ -171,8 +161,24 @@ public class NewsFrament extends Fragment {
 //            }
             Collections.reverse(newsdataholder);
 
-            adapter = new AdapterClass(newsdataholder, getActivity().getApplicationContext());
+            adapter = new AdapterClass((RecyclerViewInterface) this, newsdataholder, getContext());
             recyclerView.setAdapter(adapter);
+        }
+
+        @Override
+        public void onItemClick(int position) {
+            Bundle bundle = new Bundle();
+            bundle.putString("title", newsdataholder.get(position).getmTextTitle());
+            bundle.putString("body", newsdataholder.get(position).getmTextBody());
+            bundle.putString("image", newsdataholder.get(position).getmImageUrl());
+
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.findFragmentById(R.id.fragmentContainer);
+            Fragment df = new DescriptionFragment();
+            df.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainer,df).addToBackStack(null).commit();
+            Log.i("Description Fragment", "After inflating dec frag");
         }
     }
 
@@ -204,11 +210,16 @@ public class NewsFrament extends Fragment {
 
         //Adding recycler view layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        newsdataholder = new ArrayList<>();
 
        // list = (ListView)v.findViewById(R.id.newsList);
 
-        //starting a service
+//        if(isNetworkOK == true) {
+//            new getNews().execute();
+//        }
+
+
+
+       // starting a service
         mStartService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
