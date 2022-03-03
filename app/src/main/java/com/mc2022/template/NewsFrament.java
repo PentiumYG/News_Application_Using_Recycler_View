@@ -243,7 +243,7 @@ public class NewsFrament extends Fragment{
             @Override
             public void onClick(View view) {
                 n=1;
-                k=i;
+                k=i+1;
                 halt = false;
                 //Toast.makeText(getActivity(), "Toast check", Toast.LENGTH_SHORT).show();
                 getActivity().stopService(new Intent(getActivity().getBaseContext(), MyService.class));

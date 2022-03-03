@@ -43,11 +43,11 @@ public class AdapterClass extends RecyclerView.Adapter<AdapterClass.ViewHolder> 
         ModelNews mn = newsData.get(position);
 
         holder.title.setText(mn.getmTextTitle());
-        holder.body.setText(mn.getmTextBody());
+        //holder.body.setText(mn.getmTextBody());
         holder.sno.setText(mn.getmSno());
 
-        Picasso.with(context)
-                .load(mn.getmImageUrl()).into(holder.imageView);
+       // Picasso.with(context)
+         //       .load(mn.getmImageUrl()).into(holder.imageView);
     }
 
     @Override
@@ -66,9 +66,9 @@ public class AdapterClass extends RecyclerView.Adapter<AdapterClass.ViewHolder> 
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.newsTitle);
-            body = (TextView) itemView.findViewById(R.id.newsBody);
+          //  body = (TextView) itemView.findViewById(R.id.newsBody);
             sno = (TextView) itemView.findViewById(R.id.sNo);
-            imageView = (ImageView) itemView.findViewById(R.id.newsImage);
+           // imageView = (ImageView) itemView.findViewById(R.id.newsImage);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
