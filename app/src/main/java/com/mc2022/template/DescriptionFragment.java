@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,10 +32,15 @@ public class DescriptionFragment extends Fragment {
     TextView fTitle;
     TextView fBody;
     ImageView fImage;
+    TextView rating;
 
 
     EditText inputComm;
     Button addComm;
+    EditText inputRat;
+    Button addRat;
+
+    String ratNew;
 
     ArrayList<String> comments = new ArrayList<String>();
 
@@ -56,7 +63,9 @@ public class DescriptionFragment extends Fragment {
         fImage =(ImageView) v.findViewById(R.id.nImage);
         addComm =(Button) v.findViewById(R.id.addComm);
         inputComm =(EditText) v.findViewById(R.id.inputCom);
-
+        addRat =(Button) v.findViewById(R.id.addRat);
+        inputRat =(EditText) v.findViewById(R.id.inputRat);
+        rating = (TextView) v.findViewById(R.id.rating);
 
 
         Bundle bundle = this.getArguments();
@@ -66,7 +75,19 @@ public class DescriptionFragment extends Fragment {
         fBody.setText(dataBody);
         String urlImagedata = bundle.getString("image");
         Picasso.with(getContext()).load(urlImagedata).into(fImage);
+        String rat = bundle.getString("rating");
+        rating.setText("Rating: "+rat);
+
+
+        addRat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ratNew = inputRat.getText().toString();
+                rating.setText("Rating: "+ratNew);
+            }
+        });
        // l = (ListView) v.findViewById(R.id.list_item);
+
 
         if (l == null) {
            l = (ListView) v.findViewById(R.id.commList);

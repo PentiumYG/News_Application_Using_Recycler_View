@@ -7,14 +7,18 @@ public class ModelNews {
     private String mTextBody;
     private String mImageUrl;
     private String mSno;
+    private String rating;
 
+    public String getRating() {
+        return rating;
+    }
 
-
-    public ModelNews(String mTextTitle, String mTextBody, String mImageUrl, String mSno) {
+    public ModelNews(String mTextTitle, String mTextBody, String mImageUrl, String mSno, String rating) {
         this.mTextTitle = mTextTitle;
         this.mTextBody = mTextBody;
         this.mImageUrl = mImageUrl;
         this.mSno = mSno;
+        this.rating = rating;
     }
 
     public String getmSno() { return mSno; }

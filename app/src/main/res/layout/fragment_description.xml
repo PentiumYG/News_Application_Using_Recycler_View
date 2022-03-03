@@ -43,6 +43,12 @@
             android:id="@+id/nBody"
             android:padding="5dp"/>
 
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ratings" />
+
             <ListView
                 android:layout_width="match_parent"
                 android:id="@+id/commList"
@@ -64,6 +70,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Add Comment" />
+
+            <EditText
+                android:id="@+id/inputRat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:hint="Add Rating Here.." />
+
+            <Button
+                android:id="@+id/addRat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Rating" />
         </LinearLayout>
     </ScrollView>
 

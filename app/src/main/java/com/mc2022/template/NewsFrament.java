@@ -43,6 +43,7 @@ public class NewsFrament extends Fragment{
     boolean halt=true;
     int k=0;
     int n=0;
+    String rating = "Not defined";
 
     //creating object for recycler view
     RecyclerView recyclerView;
@@ -94,7 +95,8 @@ public class NewsFrament extends Fragment{
                                 jsonObject.getString("title"),
                                 jsonObject.getString("body"),
                                 jsonObject.getString("image-url"),
-                                String.valueOf(i));
+                                String.valueOf(i), rating);
+
 
 
                         newsdataholder.add(m);
@@ -171,6 +173,7 @@ public class NewsFrament extends Fragment{
             bundle.putString("title", newsdataholder.get(position).getmTextTitle());
             bundle.putString("body", newsdataholder.get(position).getmTextBody());
             bundle.putString("image", newsdataholder.get(position).getmImageUrl());
+            bundle.putString("rating", newsdataholder.get(position).getRating());
 
 
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
