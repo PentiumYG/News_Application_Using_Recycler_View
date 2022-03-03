@@ -32,8 +32,6 @@ public class DescriptionFragment extends Fragment {
     ImageView fImage;
 
 
-    int clickCounter=0;
-
     EditText inputComm;
     Button addComm;
 
